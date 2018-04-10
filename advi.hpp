@@ -1,5 +1,5 @@
-#ifndef STAN_VARIATIONAL_TRUSTVI_HPP
-#define STAN_VARIATIONAL_TRUSTVI_HPP
+#ifndef STAN_VARIATIONAL_ADVI_HPP
+#define STAN_VARIATIONAL_ADVI_HPP
 
 #include <stan/math.hpp>
 #include <stan/interface_callbacks/writer/base_writer.hpp>
@@ -81,7 +81,7 @@ struct trlib_qpdata {
  * @tparam BaseRNG               class of random number generator
  */
 template <class Model, class BaseRNG>
-class trustvi {
+class advi {
 public:
 /**
  * Constructor¹¹Ôìº¯Êý
@@ -98,7 +98,7 @@ public:
  * @throw  runtime_error   if eval_elbo is not positive
  * @throw  runtime_error   if n_posterior_samples is not positive
  */
-trustvi(Model& m,
+advi(Model& m,
      VectorXd& cont_params,
      BaseRNG& rng,
      int n_monte_carlo_grad,
@@ -118,7 +118,7 @@ trustvi(Model& m,
     n_posterior_samples_(n_posterior_samples),
     D_(cont_params.size()) 
 {
-  static const char* function = "stan::variational::trustvi";
+  static const char* function = "stan::variational::advi";
   math::check_positive(function,
                        "Number of Monte Carlo samples for gradients",
                        n_monte_carlo_grad_);
@@ -364,7 +364,7 @@ double gltr(const double radius,
  */
 void mc_hessian_times_vector(VectorXd& v, VectorXd& hv) {
     static const char* function =
-      "stan::variational::trustvi::mc_hessian_times_vector";
+      "stan::variational::advi::mc_hessian_times_vector";
     VectorXd mu = x_.block(0, 0, D_, 1);
     VectorXd omega = x_.block(D_, 0, D_, 1);
 
@@ -430,7 +430,7 @@ void mc_hessian_times_vector(VectorXd& v, VectorXd& hv) {
  * location vector (mu) and the log-std vector (omega).
  */
 double mc_grad(VectorXd& g, int n) {
-    static const char* function = "stan::variational::trustvi::mc_grad";
+    static const char* function = "stan::variational::advi::mc_grad";
 
     VectorXd mu = x_.block(0, 0, D_, 1);
     VectorXd omega = x_.block(D_, 0, D_, 1);
@@ -484,7 +484,7 @@ double mc_grad(VectorXd& g, int n) {
  * adjusted by the entropy term of the variational distribution.
  */
 double mc_elbo(int n, BaseRNG& rng, VectorXd& zeta) {
-    static const char* function = "stan::variational::trustvi::mc_elbo";
+    static const char* function = "stan::variational::advi::mc_elbo";
 
     VectorXd mu = x_.block(0, 0, D_, 1);
     VectorXd omega = x_.block(D_, 0, D_, 1);
@@ -525,7 +525,7 @@ double mc_elbo(int n, BaseRNG& rng, VectorXd& zeta) {
 // epsilon and zeta are just used as working memory here.
 pair<double, double> mc_elbo_change(const VectorXd& x1, int n,
                       VectorXd& epsilon, VectorXd& zeta) {
-    static const char* function = "stan::variational::trustvi::mc_elbo_change";
+    static const char* function = "stan::variational::advi::mc_elbo_change";
 
     VectorXd mu0 = x_.block(0, 0, D_, 1);
     VectorXd omega0 = x_.block(D_, 0, D_, 1);
