@@ -8,6 +8,8 @@
 #include <stan/services/io/write_iteration.hpp>
 #include <stan/services/error_codes.hpp>
 #include <stan/services/variational/print_progress.hpp>
+#include <stan/variational/families/normal_fullrank.hpp>
+#include <stan/variational/families/normal_meanfield.hpp>
 #include <boost/circular_buffer.hpp>
 #include <boost/lexical_cast.hpp>
 #include <algorithm>
